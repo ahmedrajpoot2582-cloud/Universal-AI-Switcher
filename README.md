@@ -45,3 +45,7 @@ Tests cover origin/auth isolation, reasoning/secret filtering, selected-only tra
 Vite builds to `dist/`; `vercel.json` supplies routing and headers. Run `vercel link --project universal-ai-switcher` and `vercel deploy --prod`. Vercel hosts only the dashboard. The local helper must run on each user's PC for actual provider access. No API keys or Vercel environment secrets are needed for this architecture.
 
 Official references: [Codex App Server](https://learn.chatgpt.com/docs/app-server), [Antigravity hooks](https://antigravity.google/docs/hooks), [Antigravity rules](https://antigravity.google/docs/rules), [Vercel deployment](https://vercel.com/docs/cli/deploy).
+
+Live website: https://universal-ai-switcher.vercel.app
+
+[Download just the local helper](https://universal-ai-switcher.vercel.app/downloads/universal-local-bridge.zip) (no npm install needed; Node.js and official provider apps still required).
