@@ -1,0 +1,8 @@
+.git
+node_modules
+.local
+.agents
+.universal-ai-switcher
+.env*
+*.log
+test

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.vercel/
+.local/
+*.log
+.env*
+!.env.example
+
+.agents/hooks.json
+.agents/rules/universal-switcher-continuity.md
+.universal-ai-switcher/
+
+.vercel
+.env*
