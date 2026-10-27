@@ -16,7 +16,7 @@ test('account proxy normalizes email, preserves secure HttpOnly cookies and disa
  const {default:handler}=await import('../server/account-proxy.js');const saved=process.env.NEON_AUTH_BASE_URL,fetch=global.fetch;
  process.env.NEON_AUTH_BASE_URL='https://auth.example/neondb/auth';t.after(()=>{global.fetch=fetch;if(saved===undefined)delete process.env.NEON_AUTH_BASE_URL;else process.env.NEON_AUTH_BASE_URL=saved;});
  let forwarded;global.fetch=async(url,options)=>{forwarded={url,options};return new Response('{"user":{"emailVerified":true}}',{headers:{'set-cookie':'__Secure-neon-auth.session_token=private; Domain=auth.example; Path=/neondb/auth; HttpOnly; Secure; SameSite=None'}});};
- const {response}=await request(handler);assert.equal(response.statusCode,200);assert.equal(JSON.parse(forwarded.options.body).email,'person@example.invalid');assert.equal(forwarded.options.headers.Origin,'https://universal-ai-switcher.vercel.app');
+ const {response}=await request(handler);assert.equal(response.statusCode,200);assert.equal(JSON.parse(forwarded.options.body).email,'person@example.invalid');assert.equal(forwarded.options.headers.Origin,'https://auth.example');
  const cookie=response.headers['Set-Cookie'][0];assert.match(cookie,/HttpOnly/);assert.match(cookie,/Secure/);assert.match(cookie,/SameSite=Lax/);assert.match(cookie,/Path=\//);assert(!cookie.includes('Domain='));assert.equal(response.headers['Cache-Control'],'no-store');
 });
 test('Vercel rewrite forwards nested account actions to the same handler without leaking its routing parameter',async t=>{

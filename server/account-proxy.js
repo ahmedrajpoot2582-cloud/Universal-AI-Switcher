@@ -34,7 +34,9 @@ export default async function handler(req, res) {
   try {
     const upstream = await fetch(base.replace(/\/$/, '') + '/' + route + url.search, {
       method: req.method,
-      headers: { 'Content-Type': 'application/json', Origin: origin, ...(req.headers.cookie ? { Cookie: req.headers.cookie } : {}), 'User-Agent': req.headers['user-agent'] || 'Universal-Switcher' },
+      // The browser origin was checked above. This is a same-origin reverse proxy:
+      // the upstream sees its own origin, while cookies are scoped to our public site.
+      headers: { 'Content-Type': 'application/json', Origin: new URL(base).origin, ...(req.headers.cookie ? { Cookie: req.headers.cookie } : {}), 'User-Agent': req.headers['user-agent'] || 'Universal-Switcher' },
       ...(body ? { body: JSON.stringify(body) } : {}), redirect: 'manual', signal: AbortSignal.timeout(12000)
     });
     for (const cookie of upstream.headers.getSetCookie()) {
