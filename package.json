@@ -1,6 +1,6 @@
 {
   "name": "universal-ai-switcher",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,9 +11,13 @@
     "test": "node --test test/*.test.cjs"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "better-auth": "^1.7.14",
+    "jose": "^6.2.13",
+    "jsonc-parser": "^3.3.1",
+    "lucide-react": "^0.468.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "lucide-react": "^0.468.0"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "vite": "^7.1.0"

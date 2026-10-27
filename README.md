@@ -1,57 +1,53 @@
-# Universal AI Switcher
+# Universal AI Switcher · v1.2
 
-A private local bridge with a Vercel web dashboard. Browse supported Codex history, import ChatGPT exports, see Antigravity project journals, select chats/projects, review a handoff, and continue in the next tool.
+Real provider connections, verified email accounts, independent connect/disconnect, local history aur selected project handoff. Koi preloaded demo account ya history nahin.
+
+Live: https://universal-ai-switcher.vercel.app
 
 ## Istemal
 
-1. Node.js **22.13+** aur official Codex / Antigravity apne PC par installed hon. Codex mein apne ChatGPT account se sign in karein.
-2. Is repo ko download/clone karke **Start-Local-Bridge.cmd** kholain. Helper ko running rakhein. `npm install` helper ke liye zaroori nahin: bridge sirf Node built-ins use karta hai.
-3. **http://127.0.0.1:47831/pair** kholain aur **Open & pair Universal** dabayein. Pairing code private rakhein. Browser local network permission maange to khud allow karein.
-4. Website par **Connect** se Codex aur Antigravity connect karein. **Projects → Add project** mein Git repository ka poora folder path paste karein.
-5. Library se chats aur Projects se folders select karein. Right panel mein destination aur working project choose karke **Review transfer** karein.
-6. Antigravity destination: **Prepare in Antigravity → Open Antigravity**. Wahan copied prompt dein. Codex destination: **Prepare in Codex → Open Codex draft**. Draft mein agla request likhein; Send apni alag action hai.
+1. Website par Create account se apna naam, email aur naya 12+ character password dein. Inbox ka code Verify email mein enter karein. Aik email par aik account hota hai; agli dafa Login karein. Forgot password se email code ke zariye recovery hoti hai. Google / ChatGPT ka password yahan na dein.
+2. Latest local helper ZIP extract karein. Node.js 22.13+ aur official provider app installed ho. Start-Local-Bridge.cmd kholain aur running rakhein. ZIP dependencies bundled hain; npm install nahin chahiye. Source checkout ke liye pehle npm install karein.
+3. http://127.0.0.1:47831/pair par Open & pair Universal dabayein. Pairing code private rakhein. Browser local-network permission maange to is computer ke liye allow karein.
+4. Codex Connect official app-server se signed-in ChatGPT account verify karta hai. Tamam locally available active aur archived Codex chats actual API se sync hoti hain. Sirf installed binary ya saved preference ko connected nahin kaha jata.
+5. Projects / Add project mein apni Git repository ka poora path dein. Antigravity Connect / MCP setup se wahi project select karein. Tool project ki .agents/mcp_config.json mein stdio server add karta hai. Official Antigravity mein wahi trusted project kholain aur MCP reload / nayi chat karein. Actual handshake aur heartbeat ke baad MCP active hoga; pehle Waiting for MCP.
+6. Codex MCP setup optional hai: project ki .codex/config.toml update hoti hai. Codex sirf trusted project ki config load karta hai. Codex history sync official app-server se independently chalti hai.
+7. Chats/projects select karein, destination choose karein aur Review transfer ke baad context prepare karein. Original native chat bubbles merge nahin hotin. AI prompt send karna alag action hai.
 
-## Asal support aur limitations
+Sirf aik provider independently connect ho sakta hai. Disconnect us provider ki sync/MCP access rokta hai; saved history delete ya official app se logout nahin karta. Logout Universal ka session khatam karta hai aur helper mein seen access tokens revoke karta hai. Har verified account ki local library alag hai. Purana unscoped demo/legacy workspace naye email mein automatically import nahin hota.
 
-- **Codex:** official local `codex app-server`, ChatGPT sign-in, `thread/list` / `thread/read`. Desktop WindowsApps `Codex.exe` CLI nahin hai; resolver usay skip karta hai. Adapter verified CLI family: `codex-cli 0.164.0-alpha.11.1`. Unknown versions fail clearly instead of pretending compatibility.
-- **ChatGPT web:** account ki saari browser chats ke liye universal official history API assume nahin ki gayi. Apna `conversations.json` export **Import ChatGPT** se import karein. Import local helper par hota hai, Vercel par nahin. Active branch ke public text messages import hote hain; images/attachments aur hidden reasoning copy nahin hote. Import limit 100 MB per file. All conversations in each selected file are imported in batches; no 200-conversation or 300-turn cap. Split exports larger than 100 MB.
-- **Antigravity:** installed app + explicitly connected project journals and official lifecycle hooks where they actually fire. Native hook receipt aur agent-written summaries alag labels mein dikhte hain. Full native chat-history cloning claim nahin ki gayi. Normal writable turns ka project rule agent se progress/journal save karne ko kehta hai; quota ya interruption par aakhri save miss ho sakta hai.
-- **Transfers:** selected public context + project metadata move hota hai, code folders ka cloud upload ya duplicate project migration nahin. Working project same local repository hota hai. Large histories most recent text tak trimmed hoti hain; originals unchanged rehte hain.
-- **Return:** Antigravity aur uske background tasks stop karein before Codex. Hooks ke baghair helper IDE ke writes forcefully rok nahin sakta. Native Codex desktop thread errors browser dashboard ke handoff ki receipt nahin hote.
-- **Billing:** preparing/importing/reading history inference nahin karta. Send to Codex official subscription turn hai, quota apply hota hai. API keys aur automatic top-ups nahin; extra credit balances, unknown billing or unreviewed billing block inference. UI defaults to read-only. Explicit code mode checkpoints files and shows command/file approval requests.
+## Live sync ka asal scope
 
-## Privacy and local trust boundary
+- Codex: official local codex app-server, account/read, paginated thread/list aur thread/turns/list public-summary view. Tamam active/archived pages parhe jate hain. Readable public user/assistant text local files mein save hota hai. Helper har 10 seconds account/status/history refresh karta hai; website har 3 seconds local status leti hai. Unchanged cache dobara download nahin hota. Failed pages clearly partial rehte hain. account/read model entitlement ya remaining inference quota ka proof nahin.
+- Antigravity MCP: switcher_read_context, switcher_list_history, switcher_read_history, switcher_save_progress. Sirf selected project ka saved readable context milta hai. Agent public progress save kare to aglay refresh par library update hoti hai. Stable turn IDs duplicate entries nahin banate. Heartbeat 10 seconds; 35 seconds se purana client live nahin mana jata. Client name self-reported hai; Google account login ya paid-plan identity ka proof nahin.
+- Connected project journals/genuine hook exports bhi parhe jate hain. Journals summaries hain, native transcripts nahin. Interrupted agent aakhri save miss kar sakta hai.
+- ChatGPT web aur full native Antigravity archive: MCP poore private account ki history API nahin banata. Pehle ki web-only chats ke liye official export Import karein. ChatGPT active public branch ke tamam messages; Antigravity JSON conversations/messages, Markdown/text supported. Unknown JSON transcript nahin banta. 100 MB per input file; no 200-chat/300-turn cap. Re-import stable IDs update karta hai.
+- Hidden reasoning, native attachments aur tool payloads copy nahin hote. Large handoff packets newest readable context tak bound hain; review mein actual moving text nazar aata hai. Original library unchanged rehti hai.
 
-The Vercel app is static. There is no cloud history database. The Node bridge binds **127.0.0.1:47831**, checks Host + an exact origin allowlist, requires a random bearer pairing token for all private APIs, restricts readable history to the connected library, and never sends provider credentials to the browser. Private local state lives under `%LOCALAPPDATA%/UniversalAISwitcher/web-bridge` (override with `SWITCHER_BRIDGE_DATA`). Browser pairing lives in sessionStorage and clears when that browser session ends. `/pair` is local and should not be shared. An unpaired public visitor sees no user history. Serving the bridge over a LAN/public tunnel is not supported.
+## Account security aur privacy
 
-The local allowlist defaults to `bridge/site.json`'s deployed URL plus development loopback origins. Set `SWITCHER_SITE_URL=https://your-production-domain.vercel.app` for another deployment. Changing the website origin needs a helper restart. Only pair a website build you trust: its JavaScript can access the history you authorize on that local device.
+Managed Neon Auth / Better Auth email verification, unique email accounts, password hashing, session cookies aur recovery handle karta hai. Free resource Vercel project se linked hai. Account proxy same-origin HttpOnly, Secure, SameSite=Lax cookies use karta hai. Unknown routes, external return URLs, oversized bodies aur cross-origin mutations reject hote hain. Emails normalize hote hain. Password, OTP aur access JWT browser persistent storage mein nahin rakhe jate. Managed service ki send limits aur UI ka 60-second resend cooldown apply hota hai.
 
-Known credentials are redacted as a best effort. Review the handoff before sending it to another AI. Project scripts and approved Codex commands can execute local code; allow only actions you trust. Failed/uncertain turns are not automatically replayed.
+Vercel par account identity data hota hai; project files aur chat history cloud par upload nahin hotin. Helper sirf 127.0.0.1:47831 par bind hota hai. Har private browser request random pairing token + signed verified-user JWT dono maangti hai. Signature, issuer, audience, algorithm, expiry, banned aur emailVerified verify hote hain. Local profiles issuer/user ID ke hash se isolate hain. MCP secret selected account/project/provider tak scoped local private file mein hai. Disconnected/expired account lease MCP ko block karti hai. Project config mein secret value nahin, sirf private file ka path hota hai. Existing config backup hoti hai; symbolic-link config paths refuse hote hain.
 
-## Development
+Pairing trusted local computer ka access hai. Code/private MCP config share na karein. State: %LOCALAPPDATA%/UniversalAISwitcher/web-bridge; SWITCHER_BRIDGE_DATA se override. Public/LAN tunnels unsupported hain. Credentials best-effort redact hote hain; handoff review karein.
 
-```sh
-npm install
-npm run dev
-npm run bridge
-npm test
-npm run build
-```
+## Subscriptions aur project writing
 
-Tests cover origin/auth isolation, reasoning/secret filtering, selected-only transfers, CLI-vs-desktop detection, Codex draft creation without inference, real project handoff files, journal import, unknown selection refusal, billing guards and approval queue preservation. Fixtures are not presented as live account data.
+Sync/import/prepare inference submit nahin karte. Send to Codex actual subscription turn hai; plan quota apply hota hai. API keys/automatic top-ups use nahin hote. Unknown billing, extra credit balances ya missing billing acknowledgement inference block karte hain. Read-only default hai. Code mode checkpoints aur approvals use karta hai. Antigravity/background tasks stop karke Codex ko writer banayein; MCP native writers ko forcefully stop nahin karta.
 
-## Deploy to Vercel
+Verified CLI: codex-cli 0.164.0-alpha.11.1. WindowsApps desktop Codex.exe coding CLI nahin hai. Unknown versions explicit compatibility error dete hain.
 
-Vite builds to `dist/`; `vercel.json` supplies routing and headers. Run `vercel link --project universal-ai-switcher` and `vercel deploy --prod`. Vercel hosts only the dashboard. The local helper must run on each user's PC for actual provider access. No API keys or Vercel environment secrets are needed for this architecture.
+## Development / deploy
 
-Official references: [Codex App Server](https://learn.chatgpt.com/docs/app-server), [Antigravity hooks](https://antigravity.google/docs/hooks), [Antigravity rules](https://antigravity.google/docs/rules), [Vercel deployment](https://vercel.com/docs/cli/deploy).
+npm install; npm run dev; npm run bridge; npm test; npm run build.
 
-Live website: https://universal-ai-switcher.vercel.app
+NEON_AUTH_BASE_URL server setting managed Vercel integration se milti hai. .env.local local account proxy ke liye hai; Git mein commit na karein. bridge/auth.json mein sirf public issuer URL hai. Database/password secrets helper mein ship nahin hote. api/auth/[...path].js account proxy hai, Vite dist frontend. vercel deploy --prod dono publish karta hai. scripts/package-bridge.cjs dependencies ke saath helper package banata hai.
 
-[Download just the local helper](https://universal-ai-switcher.vercel.app/downloads/universal-local-bridge.zip) (no npm install needed; Node.js and official provider apps still required).
+Tests: real JWT signature rejection, account isolation/logout revocation, CSRF/origin/cookies, stale MCP heartbeat, installed-but-unverified status, scoped public-progress read/write, full pagination/cache, independent providers, selected-only handoffs, billing guard aur CLI detection. Fixtures sirf isolated tests mein hain; tests ko actual inbox delivery ka proof nahin kaha jata.
 
-## v1.1 — independent Connect / Disconnect and full available history
+Official docs: [Codex App Server](https://learn.chatgpt.com/docs/app-server), [Codex MCP](https://developers.openai.com/codex/mcp), [Antigravity MCP](https://antigravity.google/docs/mcp), [Neon verification](https://neon.com/docs/auth/guides/email-verification), [Neon JWT](https://neon.com/docs/auth/guides/plugins/jwt).
 
-Har provider ke apne Connect, Disconnect, Sync all history aur Import history controls hain. Sirf aik provider connect ho to bhi woh independently kaam karta hai. Codex connection sab active aur archived local conversations ke pages parhta hai aur full public message history ko local per-conversation cache mein save karta hai. Scope hidden reasoning, attachments aur ChatGPT web-only cloud chats ko automatically include nahin karta. Progress mein discovered, saved, failed aur last sync dikhte hain. Partial failures ko complete nahin kaha jata. Connected providers ki history har minute refresh hoti hai; unchanged histories dobara download nahin hotin. Disconnect new sync ko cancel karta hai, official account se sign out ya saved chats delete nahin karta. Reconnect par sync dobara shuru hoti hai.
+[Download helper](https://universal-ai-switcher.vercel.app/downloads/universal-local-bridge.zip)
 
-Antigravity side tamam connected project journals aur hook-exported conversations parhti hai. Older native archive ke liye official app se exported JSON (messages / conversations), Markdown ya text files Import history se select karein. Unrecognized JSON does not become a claimed transcript. Imported text exports are labelled documents. ChatGPT exports use only the active public branch. Re-import uses stable IDs and updates existing rows rather than duplicating. Offline saved chats remain readable after disconnect and helper restart. Large library content lives in local per-conversation files, not the Vercel server or frontend bundle.
+Other MCP app: kisi bhi standard stdio MCP-compatible client ke liye separate Connect/Disconnect option hai. Project select karke MCP setup se generated configuration copy karein aur us client mein add karein. Handshake ke baad MCP active hoga. Destination MCP app selected handoff ko context.json mein save karta hai; client switcher_read_context se parh sakta hai. Yeh client ki native account-wide history ka automatic access nahin deta. Multiple configured clients apne actual self-reported names ke saath dikhte hain.
