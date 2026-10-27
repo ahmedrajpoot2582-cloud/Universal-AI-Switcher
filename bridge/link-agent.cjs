@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('node:fs'),readline=require('node:readline');
+const {LinkSync,upload}=require('./link-sync.cjs');
+async function start(file){const config=JSON.parse(fs.readFileSync(file,'utf8'));config.file=file;let next=0,version='2025-06-18',timer,initialized=false;const sync=new LinkSync(config);
+ const rpc=async(method,params,notification=false)=>{const response=await fetch(config.mcpUrl,{method:'POST',headers:{Authorization:'Bearer '+config.token,'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':version},body:JSON.stringify({jsonrpc:'2.0',...(notification?{}:{id:++next}),method,...(params?{params}:{})}),signal:AbortSignal.timeout(30000)});if(response.status===202)return null;let data;try{data=await response.json();}catch{throw Error('MCP server returned an unreadable response.');}if(!response.ok||data.error)throw Error(data.error?.message||data.error||'MCP connection unavailable.');return data.result;};
+ const report=error=>upload(config,'status',{status:{status:'error',total:0,saved:0,failed:1,lastError:error.message}}).catch(()=>{});
+ const close=async()=>{clearInterval(timer);await sync.close();};
+ const handle=async message=>{if(message.jsonrpc!=='2.0')return;if(message.id===undefined){if(initialized)await rpc(message.method,message.params,true).catch(()=>{});return;}try{
+  const result=await rpc(message.method,message.params);if(message.method==='initialize'){version=result.protocolVersion;initialized=true;timer=setInterval(()=>{rpc('ping').catch(()=>{});sync.run().catch(report);},10000);timer.unref();sync.run().catch(report);}process.stdout.write(JSON.stringify({jsonrpc:'2.0',id:message.id,result})+'\n');
+ }catch(e){process.stdout.write(JSON.stringify({jsonrpc:'2.0',id:message.id,error:{code:-32000,message:String(e.message).slice(0,500)}})+'\n');}};
+ const input=readline.createInterface({input:process.stdin,crlfDelay:Infinity});let queue=Promise.resolve();input.on('line',line=>{if(Buffer.byteLength(line)>3*1024*1024)return;queue=queue.then(async()=>{try{await handle(JSON.parse(line));}catch{}});});input.on('close',()=>close().finally(()=>process.exit(0)));process.once('SIGTERM',()=>close().finally(()=>process.exit(0)));}
+const index=process.argv.indexOf('--config');if(index<0)process.stderr.write('Private connection configuration is required.\n');else start(process.argv[index+1]).catch(()=>{process.stderr.write('Universal connection failed. Generate a new connection link.\n');process.exitCode=1;});

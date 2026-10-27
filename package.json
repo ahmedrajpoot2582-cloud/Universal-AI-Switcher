@@ -1,18 +1,22 @@
 {
   "name": "universal-ai-switcher",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "bridge": "node bridge/server.cjs",
-    "test": "node --test test/*.test.cjs"
+    "bridge": "node bridge/link-install.cjs",
+    "test": "node --test test/*.test.cjs",
+    "connect": "node bridge/link-install.cjs"
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@neondatabase/serverless": "^1.2.0",
     "better-auth": "^1.7.14",
+    "fflate": "^0.8.3",
     "jose": "^6.2.13",
     "jsonc-parser": "^3.3.1",
     "lucide-react": "^0.468.0",
@@ -20,6 +24,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.12",
     "vite": "^7.1.0"
   },
   "engines": {

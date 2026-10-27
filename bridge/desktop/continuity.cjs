@@ -67,12 +67,12 @@ async function collect(project){
   if(!project.continuityEnabled)return {enabled:false,messages:[],state:null,progress:''};
   const state=await readJson(project,'antigravity-state.json');const messages=[];
   const exportDir=path.join(directory(project),'exports');
-  try{const root=await fsp.realpath(directory(project)),real=await fsp.realpath(exportDir);if(!c.within(root,real))throw new Error('Export path outside continuity directory.');for(const name of (await fsp.readdir(real)).filter(n=>/^[a-f0-9-]{36}\.json$/i.test(n))){const record=await readJson(project,'exports/'+name);if(record?.projectId!==project.id||!Array.isArray(record.messages))continue;for(const msg of record.messages)if(['user','assistant'].includes(msg.role)&&typeof msg.text==='string'&&typeof msg.id==='string')messages.push({...msg,id:project.id+':'+msg.id,text:c.redact(msg.text).slice(0,24000),at:msg.at||record.at,conversationId:record.conversationId,provider:'antigravity'});}}catch(e){if(!['ENOENT','ENOTDIR'].includes(e.code))throw e;}
+  try{const root=await fsp.realpath(directory(project)),real=await fsp.realpath(exportDir);if(!c.within(root,real))throw new Error('Export path outside continuity directory.');for(const name of (await fsp.readdir(real)).filter(n=>/^[a-f0-9-]{36}\.json$/i.test(n))){const record=await readJson(project,'exports/'+name);if(record?.projectId!==project.id||!Array.isArray(record.messages))continue;for(const msg of record.messages)if(['user','assistant'].includes(msg.role)&&typeof msg.text==='string'&&typeof msg.id==='string')messages.push({...msg,id:project.id+':'+msg.id,text:c.redact(msg.text),at:msg.at||record.at,conversationId:record.conversationId,provider:'antigravity'});}}catch(e){if(!['ENOENT','ENOTDIR'].includes(e.code))throw e;}
   const journal=await readJson(project,'agent-journal.json');let journalAt=null;
   if(journal?.projectId===project.id&&Array.isArray(journal.entries)){
     const seen=new Set();for(const msg of journal.entries){
       if(!msg||!['user','assistant'].includes(msg.role)||msg.channel&&msg.channel!=='final'||typeof msg.text!=='string'||!msg.text.trim()||typeof msg.id!=='string'||!/^[a-zA-Z0-9_-]{1,96}$/.test(msg.id)||seen.has(msg.id)||typeof msg.at!=='string'||!Number.isFinite(Date.parse(msg.at)))continue;
-      seen.add(msg.id);messages.push({id:project.id+':journal:'+msg.id,role:msg.role,text:hook.redact(msg.text).slice(0,24000),at:msg.at,provider:'antigravity',source:'agent_journal'});journalAt=msg.at;
+      seen.add(msg.id);messages.push({id:project.id+':journal:'+msg.id,role:msg.role,text:hook.redact(msg.text),at:msg.at,provider:'antigravity',source:'agent_journal'});journalAt=msg.at;
     }
   }
   let progress='';try{const p=await c.safeFile(project.root,FOLDER+'/PROGRESS.md');if((await fsp.stat(p)).size<=100000)progress=c.redact(await readFile(p,'utf8'));}catch{}
