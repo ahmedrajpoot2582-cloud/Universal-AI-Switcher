@@ -10,7 +10,8 @@ export default async function handler(req, res) {
   const base = process.env.NEON_AUTH_BASE_URL;
   if (!base) return res.status(503).json({ message: 'Email login service is not configured.' });
   const url = new URL(req.url, 'https://universal-ai-switcher.vercel.app');
-  const route = url.pathname.replace(/^\/api\/auth\//, '');
+  const route = url.searchParams.get('authPath') || req.query?.authPath || url.pathname.replace(/^\/api\/auth\//, '');
+  url.searchParams.delete('authPath');
   if (!allowed.has(route) || !['GET', 'POST'].includes(req.method)) return res.status(404).json({ message: 'Unknown account action.' });
   const host = req.headers.host;
   const origin = host === 'localhost:5173' || host === '127.0.0.1:5173' ? 'http://' + host : 'https://' + host;

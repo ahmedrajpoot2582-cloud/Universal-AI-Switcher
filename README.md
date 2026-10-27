@@ -42,7 +42,7 @@ Verified CLI: codex-cli 0.164.0-alpha.11.1. WindowsApps desktop Codex.exe coding
 
 npm install; npm run dev; npm run bridge; npm test; npm run build.
 
-NEON_AUTH_BASE_URL server setting managed Vercel integration se milti hai. .env.local local account proxy ke liye hai; Git mein commit na karein. bridge/auth.json mein sirf public issuer URL hai. Database/password secrets helper mein ship nahin hote. api/auth/[...path].js account proxy hai, Vite dist frontend. vercel deploy --prod dono publish karta hai. scripts/package-bridge.cjs dependencies ke saath helper package banata hai.
+NEON_AUTH_BASE_URL server setting managed Vercel integration se milti hai. .env.local local account proxy ke liye hai; Git mein commit na karein. bridge/auth.json mein sirf public issuer URL hai. Database/password secrets helper mein ship nahin hote. api/account.js aur server/account-proxy.js account proxy hai, Vite dist frontend. vercel deploy --prod dono publish karta hai. scripts/package-bridge.cjs dependencies ke saath helper package banata hai.
 
 Tests: real JWT signature rejection, account isolation/logout revocation, CSRF/origin/cookies, stale MCP heartbeat, installed-but-unverified status, scoped public-progress read/write, full pagination/cache, independent providers, selected-only handoffs, billing guard aur CLI detection. Fixtures sirf isolated tests mein hain; tests ko actual inbox delivery ka proof nahin kaha jata.
 

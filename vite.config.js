@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv } from 'vite';
-import accountHandler from './api/auth/[...path].js';
+import accountHandler from './server/account-proxy.js';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   process.env.NEON_AUTH_BASE_URL = env.NEON_AUTH_BASE_URL || process.env.NEON_AUTH_BASE_URL;
